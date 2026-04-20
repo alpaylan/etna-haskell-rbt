@@ -1,0 +1,3 @@
+name = "RBT"
+language = "Haskell"
+description = "Red-black tree workload for Etna, with QuickCheck/SmallCheck/LeanCheck generators."
