@@ -33,13 +33,13 @@ insert x vx s = blacken (ins x vx s)
       {- !-}
     ins x vx (T rb a y vy b)
       {-! -}
-{-!
       | x < y = balance rb (ins x vx a) y vy b
       | x > y = balance rb a y vy (ins x vx b)
       | otherwise = T rb a y vx b
--}
       {-!! insert_1 -}
+      {-!
       = T R E x vx E
+      -}
       {-!! insert_2 -}
       {-!
       | x < y = balance rb (ins x vx a) y vy b
@@ -117,13 +117,13 @@ balLeft (T R a x vx b) y vy c = return $ T R (T B a x vx b) y vy c
 balLeft bl x vx (T B a y vy b) = return $ balance B bl x vx (T R a y vy b)
 balLeft bl x vx (T R (T B a y vy b) z vz c) =
   {-! -}
+  {-!
   do
   c' <- redden c
   return $ T R (T B bl x vx a) y vy (balance B b z vz c')
-  {-!! miscolor_balLeft -}
-  {-!
-  return $ T R (T B bl x vx a) y vy (balance B b z vz c)
   -}
+  {-!! miscolor_balLeft -}
+  return $ T R (T B bl x vx a) y vy (balance B b z vz c)
   {- !-}
 balLeft _ _ _ _ = Left IE
 

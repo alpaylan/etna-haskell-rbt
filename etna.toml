@@ -1,6 +1,22 @@
 name = "rbt-haskell"
 language = "Haskell"
 description = "Red-black tree workload for Etna, with QuickCheck/SmallCheck/LeanCheck generators."
+strategies = [
+  "Correct",
+  "Falsify",
+  "FalsifyCBC",
+  "FalsifyCBC2",
+  "FalsifyGbE",
+  "Hedgehog",
+  "HedgehogCBC",
+  "HedgehogGbE",
+  "Lean",
+  "LeanRev",
+  "Quick",
+  "QuickCBC",
+  "Small",
+  "SmallRev",
+]
 
 mutations = [
   "delete_4",
@@ -16,6 +32,8 @@ mutations = [
   "miscolor_join_2",
   "no_balance_insert_1",
   "no_balance_insert_2",
+  "swap_bc",
+  "swap_cd",
 ]
 
 [[tasks]]
@@ -119,4 +137,40 @@ tasks = [
   { property = "InsertValid", witnesses = [{ input = "((T B E -1 0 E) 0 0)" }] },
   { property = "DeleteInsert", witnesses = [{ input = "((T B E 0 0 E) 3 3 0)" }] },
   { property = "InsertDelete", witnesses = [{ input = "(E 0 0 0)" }] },
+]
+
+# swap_bc / swap_cd were in the original ETNA paper task set (each with all 10
+# properties) but were dropped from etna2's canonical templates. Restoring them
+# here to bring rbt-haskell up to the paper's 58 (mutation, property) pairs.
+# Witnesses are placeholders (etna2 driver treats them as metadata only:
+# https://github.com/.../driver.rs:102 "witnesses are metadata, not template params").
+
+[[tasks]]
+mutations = ["swap_bc"]
+tasks = [
+  { property = "InsertValid",  witnesses = [{ input = "(E 0 0)" }] },
+  { property = "InsertModel",  witnesses = [{ input = "(E 0 0)" }] },
+  { property = "InsertPost",   witnesses = [{ input = "(E 0 0 0)" }] },
+  { property = "DeleteValid",  witnesses = [{ input = "(E 0)" }] },
+  { property = "DeletePost",   witnesses = [{ input = "(E 0 0)" }] },
+  { property = "DeleteModel",  witnesses = [{ input = "(E 0)" }] },
+  { property = "DeleteDelete", witnesses = [{ input = "(E 0 0)" }] },
+  { property = "DeleteInsert", witnesses = [{ input = "(E 0 0 0)" }] },
+  { property = "InsertDelete", witnesses = [{ input = "(E 0 0 0)" }] },
+  { property = "InsertInsert", witnesses = [{ input = "(E 0 0 0 0)" }] },
+]
+
+[[tasks]]
+mutations = ["swap_cd"]
+tasks = [
+  { property = "InsertValid",  witnesses = [{ input = "(E 0 0)" }] },
+  { property = "InsertModel",  witnesses = [{ input = "(E 0 0)" }] },
+  { property = "InsertPost",   witnesses = [{ input = "(E 0 0 0)" }] },
+  { property = "DeleteValid",  witnesses = [{ input = "(E 0)" }] },
+  { property = "DeletePost",   witnesses = [{ input = "(E 0 0)" }] },
+  { property = "DeleteModel",  witnesses = [{ input = "(E 0)" }] },
+  { property = "DeleteDelete", witnesses = [{ input = "(E 0 0)" }] },
+  { property = "DeleteInsert", witnesses = [{ input = "(E 0 0 0)" }] },
+  { property = "InsertDelete", witnesses = [{ input = "(E 0 0 0)" }] },
+  { property = "InsertInsert", witnesses = [{ input = "(E 0 0 0 0)" }] },
 ]

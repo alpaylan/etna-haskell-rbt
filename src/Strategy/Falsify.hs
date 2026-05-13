@@ -23,21 +23,19 @@ instance FGen Val where
 instance FGen Color where
   fgen = Gen.elem (R :| [B])
 
+-- Unified RBT generator (matches Strategy.Quick / Strategy.Hedgehog):
+-- frequency [(1, E), (3, T ...)] with a fixed depth budget of 5.
+genRBTF :: Int -> Gen RBT
+genRBTF n
+  | n <= 0 = pure E
+  | otherwise =
+      Gen.frequency
+        [ (1, pure E)
+        , (3, T <$> fgen <*> genRBTF (n - 1) <*> fgen <*> fgen <*> genRBTF (n - 1))
+        ]
+
 instance FGen RBT where
-  fgen = do
-    height <- Gen.int (Range.between (0, 1000))
-    genRBT height
-    where
-      genRBT :: Int -> Gen RBT
-      genRBT height
-        | height <= 0 = pure E
-        | otherwise = do
-            left <- Gen.int (Range.between (0, height - 1))
-            right <- Gen.int (Range.between (0, height - 1))
-            Gen.frequency
-              [ (1, pure E),
-                (3, T <$> fgen <*> genRBT left <*> fgen <*> fgen <*> genRBT right)
-              ]
+  fgen = genRBTF 5
 
 instance (FGen a, FGen b) => FGen (a, b) where
   fgen = (,) <$> fgen <*> fgen

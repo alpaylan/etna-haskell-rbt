@@ -1,14 +1,30 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Strategy.Correct where
 
 import Etna.Lib
+import GHC.Generics (Generic)
 import Impl
 import Spec
 import Test.QuickCheck hiding (Result)
 
+deriving instance Generic RBT
+deriving instance Generic Color
+
+instance Arbitrary Color where
+  arbitrary = oneof [return R, return B]
+  shrink = genericShrink
+
 instance Arbitrary RBT where
+  -- Generation by execution: produces valid RBTs by construction.
+  -- genericShrink may break the invariant (e.g. promoting a subtree
+  -- yields a tree whose black heights no longer agree). The Naive
+  -- precondition below discards invalid shrinks and lets QC keep
+  -- exploring valid candidates.
+  shrink = genericShrink
   arbitrary = do
     kvs <- arbitrary :: Gen [(Key, Val)]
     return $ foldr (uncurry insert) E kvs
@@ -41,7 +57,7 @@ instance Arbitrary Val where
   arbitrary = Val <$> arbitrary
 
 $( mkStrategies
-     [|qcRunArb qcDefaults Correct|]
+     [|qcRunArb qcDefaults Naive|]
      [ 'prop_InsertValid,
        'prop_DeleteValid,
        'prop_InsertPost,

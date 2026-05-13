@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.39.1.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -14,10 +14,18 @@ library
       Spec
       Strategy.Correct
       Strategy.Falsify
+      Strategy.FalsifyCBC
+      Strategy.FalsifyCBC2
+      Strategy.FalsifyGbE
       Strategy.Hedgehog
+      Strategy.HedgehogCBC
+      Strategy.HedgehogCBC2
+      Strategy.HedgehogGbE
       Strategy.Lean
       Strategy.LeanRev
       Strategy.Quick
+      Strategy.QuickCBC
+      Strategy.QuickGbE
       Strategy.Small
       Strategy.SmallRev
       Strategy.SpecRev
